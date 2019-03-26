@@ -1,3 +1,15 @@
+.DS_Store
 *.pyc
+*.pyo
+*.swp
+.env
+env
+env*
+venv
+dist
+build
 *__pycache__
-*.idea
+.idea/
+db.sqlite3
+*.log
+django.db
