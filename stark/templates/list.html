@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load rbac %}
+{% block content %}
+    {% if showlist.config.list_filter %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-filter" aria-hidden="true"></i> 快速筛选
+            </div>
+            <div class="panel-body">
+                <div class="search-group">
+                    {% for filter_field,linktags in showlist.get_filter_linktags.items %}
+                        <div class="row">
+                            <div class="whole">{{ filter_field }}</div>
+
+                            {% for link in linktags %}
+                                {{ link }}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if showlist.config.search_fields %}
+        <div style="float: right;margin: 5px 0;">
+            <form method="GET" class="form-inline">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="q" value="{{ showlist.config.key_word }}"
+                           placeholder="关键字搜索">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div style="float: left;margin: 5px 10px 5px 0;">
+            <div class="form-inline">
+                <div class="form-group">
+                    <select class="form-control" name="action">
+                        <option value="">请选择操作</option>
+                        {% for action in showlist.get_actions %}
+                            <option value="{{ action.func_name }}">{{ action.func_text }}</option>
+                        {% endfor %}
+                    </select>
+                    <input class="btn btn-primary" type="submit" value="批量执行"/>
+                </div>
+            </div>
+        </div>
+        {#    {% if 'role_add'|has_permission:request%}#}
+        <div style="margin: 5px 0;float: left">
+            <a href="{{ add_url }}" class="btn btn-primary">添加</a>
+        </div>
+        {#    {% endif %}#}
+
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                {% for th in showlist.get_header %}
+                    <th>{{ th }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for data in showlist.get_body %}
+                <tr>
+                    {% for foo in data %}
+                        <td>{{ foo }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </form>
+    <nav class="pull-right">
+        <ul class="pagination">
+            {{ showlist.pagination.page_html }}
+        </ul>
+    </nav>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $("#check_all").click(function () {
+            var xz = $(this).prop("checked");
+            var ck = $(".qx").prop("checked", xz);
+        })
+    </script>
+{% endblock %}
+
