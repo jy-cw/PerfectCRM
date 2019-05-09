@@ -271,7 +271,7 @@ class ModelStark(object):
         filter_con =Q()
         params = request.GET
         for filter,val in params.items():
-            if filter !="page":
+            if filter !="page" and filter !="q":
                 filter_con.children.append((filter,val))
         return filter_con
 
@@ -305,9 +305,9 @@ class ModelStark(object):
         form = self.init_form_pop(form_demo)
 
         if request.method == 'POST':
-            form1 = self.init_form_pop(ModelFormDemo(request.POST))
-            if form1.is_valid():
-                obj = self.save(request,form1,False,*args,**kwargs)
+            form = self.init_form_pop(ModelFormDemo(request.POST))
+            if form.is_valid():
+                obj = self.save(request,form,False,*args,**kwargs)
                 pop_res_id = request.GET.get('pop_res_id')
                 if pop_res_id:
                     res = {'id':obj.id,'text':str(obj),'pop_res_id':pop_res_id}
